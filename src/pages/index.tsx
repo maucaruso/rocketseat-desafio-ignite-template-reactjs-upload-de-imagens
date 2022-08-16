@@ -19,23 +19,26 @@ export default function Home(): JSX.Element {
   } = useInfiniteQuery(
     'images',
     ({ pageParam = null }) => {
-      return api.get(`/api/images?after=${pageParam}`);
+      return api.get(`/api/images?after=${pageParam || ''}`);
     },
     {
       getNextPageParam: (after = null) => after,
     }
-    // TODO GET AND RETURN NEXT PAGE PARAM
   );
 
-  console.log(data);
-
   const formattedData = useMemo(() => {
-    //data.pages
+    data?.pages.map(page => {
+      return page?.data?.data;
+    });
   }, [data]);
 
-  // TODO RENDER LOADING SCREEN
+  if (isLoading) {
+    return <Loading />;
+  }
 
-  // TODO RENDER ERROR SCREEN
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <>
